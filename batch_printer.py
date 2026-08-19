@@ -58,15 +58,21 @@ class BatchPrinterApp:
             messagebox.showerror("Error", "Please select a valid folder.")
             return
 
-        # Find matching images containing "print-me"
+        # Verify folder name or path contains "print-me"
+        folder_name = os.path.basename(os.path.normpath(folder))
+        if "print-me" not in folder_name.lower():
+            messagebox.showwarning("Invalid Folder", "Please select a folder named 'print-me' (or containing 'print-me').")
+            return
+
+        # Find all valid images inside the "print-me" folder
         valid_exts = ('.jpg', '.jpeg', '.png', '.bmp', '.tiff')
         target_files = [
             os.path.join(folder, f) for f in os.listdir(folder)
-            if "print-me" in f.lower() and f.lower().endswith(valid_exts)
+            if f.lower().endswith(valid_exts)
         ]
 
         if not target_files:
-            messagebox.showwarning("No Matches", "No images containing 'print-me' were found in this folder.")
+            messagebox.showwarning("No Images Found", "No supported image files (.jpg, .png, etc.) were found inside this folder.")
             return
 
         processed_images = []
