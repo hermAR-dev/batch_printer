@@ -1,15 +1,16 @@
 name: Build Windows Executable
 
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -18,12 +19,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install Pillow pywin32 pyinstaller
 
-      - name: Build with PyInstaller
+      - name: Build Executable with PyInstaller
         run: |
-          pyinstaller --onefile --noconsole --collect-submodules PIL batch_printer.py
+          pyinstaller --noconfirm --onefile --noconsole --collect-all PIL --collect-all tkinter batch_printer.py
 
       - name: Upload Executable
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: BatchPrinter-Windows
           path: dist/batch_printer.exe
